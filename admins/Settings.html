@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        body.high-contrast {
+            background: #000 !important;
+            color: #fff !important;
+        }
+
+        body.high-contrast .navbar,
+        body.high-contrast .section,
+        body.high-contrast .card,
+        body.high-contrast table,
+        body.high-contrast .modal-content,
+        body.high-contrast th,
+        body.high-contrast td,
+        body.high-contrast .stats,
+        body.high-contrast .stat-card,
+        body.high-contrast .activity-section,
+        body.high-contrast .links-section,
+        body.high-contrast .services-section,
+        body.high-contrast .providers-section,
+        body.high-contrast .preview-box {
+            background: #232323 !important;
+            color: #fff !important;
+            border-color: #888 !important;
+            box-shadow: none !important;
+        }
+
+        body.high-contrast .navbar,
+        body.high-contrast .section,
+        body.high-contrast .modal-content,
+        body.high-contrast .stat-card,
+        body.high-contrast .activity-section,
+        body.high-contrast .links-section,
+        body.high-contrast .services-section,
+        body.high-contrast .providers-section {
+            border-radius: 8px !important;
+            border: 2px solid #888 !important;
+        }
+
+        body.high-contrast .container {
+            background: #181818 !important;
+            border: none !important;
+        }
+
+        body.high-contrast th {
+            background: #333 !important;
+            color: #fff !important;
+        }
+
+        body.high-contrast tr:nth-child(even) {
+            background: #181818 !important;
+        }
+
+        body.high-contrast tr:hover {
+            background: #222 !important;
+        }
+
+        body.high-contrast .no-providers,
+        body.high-contrast .info-text,
+        body.high-contrast .setting-description {
+            color: #ccc !important;
+        }
+
+        body.high-contrast input,
+        body.high-contrast select,
+        body.high-contrast textarea {
+            background: #181818 !important;
+            color: #fff !important;
+            border: 1px solid #888 !important;
+        }
+
+        body.high-contrast label {
+            color: #fff !important;
+        }
+
+        body.high-contrast .btn-delete,
+        body.high-contrast button,
+        body.high-contrast .navbar button {
+            background: #444 !important;
+            color: #fff !important;
+            border: 1px solid #fff !important;
+        }
+
+        body.high-contrast .btn-delete:hover,
+        body.high-contrast button:hover,
+        body.high-contrast .navbar button:hover {
+            background: #666 !important;
+        }
+
+        body.high-contrast .message.success {
+            background: #234d23 !important;
+            color: #b6ffb6 !important;
+        }
+
+        body.high-contrast .message.error {
+            background: #4d2323 !important;
+            color: #ffb6b6 !important;
+        }
+
+        body.high-contrast .close {
+            color: #fff !important;
+        }
+
+        body.high-contrast h1,
+        body.high-contrast h2 {
+            color: #fff !important;
+        }
+
+        body.high-contrast .search-bar button {
+            background: #444 !important;
+            color: #fff !important;
+            border: 1px solid #fff !important;
+        }
+
+        body.high-contrast .search-bar button:hover {
+            background: #666 !important;
+        }
+
+        body.high-contrast .search-bar input {
+            background: #181818 !important;
+            color: #fff !important;
+            border: 1px solid #888 !important;
+        }
+
+        body.high-contrast .modal-buttons button[style*="background: #6c757d"] {
+            background: #555 !important;
+            color: #fff !important;
+            border: 1px solid #fff !important;
+        }
+
+        .navbar {
+            background: white;
+            padding: 16px 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .navbar button {
+            background: #0066cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .navbar button:hover {
+            background: #0052a3;
+        }
+
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        body.high-contrast h1 {
+            color: #fff;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+
+        body.high-contrast h2 {
+            color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        body.high-contrast label {
+            color: #fff;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            max-width: 300px;
+            height: 6px;
+            cursor: pointer;
+        }
+
+        .range-value {
+            background: #0066cc;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        body.high-contrast .range-value {
+            background: #fff;
+            color: #000;
+            border: 2px solid #fff;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+
+        .preview-box {
+            background: #f9f9f9;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        body.high-contrast .preview-box {
+            background: #2a2a2a;
+            border: 2px solid #fff;
+        }
+
+        .preview-text {
+            line-height: 1.6;
+            color: #333;
+        }
+
+        body.high-contrast .preview-text {
+            color: #fff;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 500;
+            font-size: inherit;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 8px;
+        }
+
+        body.high-contrast .info-text {
+            color: #ccc;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        body.high-contrast .setting-description {
+            color: #ccc;
+        }
+
+        body.high-contrast .activity-section,
+        body.high-contrast .links-section,
+        body.high-contrast .services-section,
+        body.high-contrast .providers-section,
+        body.high-contrast .stat-card {
+            background: #1a1a1a;
+            color: #fff;
+            border: 2px solid #fff;
+        }
+
+        /* Apply to all your admin HTML files' <style> sections */
+        /* --- HIGH CONTRAST MODE BUTTONS --- */
+        body.high-contrast .navbar button,
+        body.high-contrast button,
+        body.high-contrast input[type="submit"],
+        body.high-contrast input[type="button"],
+        body.high-contrast .btn-delete,
+        body.high-contrast .logout-btn,
+        body.high-contrast .link-btn {
+            background: #444 !important;
+            color: #fff !important;
+            border: 1px solid #fff !important;
+        }
+
+        body.high-contrast .navbar button:hover,
+        body.high-contrast button:hover,
+        body.high-contrast input[type="submit"]:hover,
+        body.high-contrast input[type="button"]:hover,
+        body.high-contrast .btn-delete:hover,
+        body.high-contrast .logout-btn:hover,
+        body.high-contrast .link-btn:hover {
+            background: #666 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <button onclick="location.href='Dashboard.html'">Dashboard</button>
+        <button onclick="location.href='admin_login.html'">Logout</button>
+    </div>
+
+    <main>
+        <div class="container">
+            <h1>Settings</h1>
+
+            <div class="section">
+                <h2>Accessibility</h2>
+                <div id="message" class="message"></div>
+
+                <!-- Text Size Control -->
+                <div class="form-group">
+                    <label>Text Size</label>
+                    <p class="setting-description">
+                        Adjust the overall text size for better readability.
+                    </p>
+                    <div class="control-group">
+                        <input
+                            type="range"
+                            id="textSizeSlider"
+                            min="12"
+                            max="18"
+                            value="14"
+                            step="1"
+                        />
+                        <div class="range-value" id="textSizeValue">14px</div>
+                    </div>
+                    <p class="info-text">Current: <span id="textSizeDisplay">Normal (14px)</span></p>
+                </div>
+
+                <!-- Contrast Control -->
+                <div class="form-group">
+                    <label>High Contrast Mode</label>
+                    <p class="setting-description">
+                        Enable high contrast for improved visibility.
+                    </p>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input
+                                type="radio"
+                                id="contrastOff"
+                                name="contrast"
+                                value="off"
+                                checked
+                            />
+                            <label for="contrastOff">Off</label>
+                        </div>
+                        <div class="radio-option">
+                            <input
+                                type="radio"
+                                id="contrastOn"
+                                name="contrast"
+                                value="on"
+                            />
+                            <label for="contrastOn">On</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="form-group">
+                    <label>Preview</label>
+                    <div class="preview-box">
+                        <p class="preview-text">
+                            This is a preview of how your text will appear with the current settings.
+                            Adjust the controls above to see the changes in real time.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="button-group">
+                    <button onclick="saveSettings()">Save Settings</button>
+                    <button class="btn-secondary" onclick="resetSettings()">
+                        Reset to Defaults
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        'use strict';
+
+        // Initialize settings from localStorage
+        function initializeSettings() {
+            const textSize = localStorage.getItem('textSize') || '14';
+            const contrast = localStorage.getItem('highContrast') || 'off';
+
+            // Set text size
+            document.getElementById('textSizeSlider').value = textSize;
+            applyTextSize(textSize);
+
+            // Set contrast
+            if (contrast === 'on') {
+                document.getElementById('contrastOn').checked = true;
+                document.body.classList.add('high-contrast');
+            } else {
+                document.getElementById('contrastOff').checked = true;
+                document.body.classList.remove('high-contrast');
+            }
+        }
+
+        // Apply text size changes
+        function applyTextSize(size) {
+            document.body.classList.remove(
+                'text-size-small',
+                'text-size-normal',
+                'text-size-large',
+                'text-size-xlarge'
+            );
+
+            document.getElementById('textSizeValue').textContent = size + 'px';
+
+            if (size === '12') {
+                document.body.classList.add('text-size-small');
+                document.getElementById('textSizeDisplay').textContent =
+                    'Small (12px)';
+            } else if (size === '14') {
+                document.body.classList.add('text-size-normal');
+                document.getElementById('textSizeDisplay').textContent =
+                    'Normal (14px)';
+            } else if (size === '16') {
+                document.body.classList.add('text-size-large');
+                document.getElementById('textSizeDisplay').textContent =
+                    'Large (16px)';
+            } else if (size === '18') {
+                document.body.classList.add('text-size-xlarge');
+                document.getElementById('textSizeDisplay').textContent =
+                    'Extra Large (18px)';
+            }
+        }
+
+        // Text size slider listener
+        document.getElementById('textSizeSlider').addEventListener(
+            'input',
+            function (e) {
+                applyTextSize(e.target.value);
+            }
+        );
+
+        // Contrast toggle listeners
+        document.getElementById('contrastOn').addEventListener('change', function () {
+            if (this.checked) {
+                document.body.classList.add('high-contrast');
+            }
+        });
+
+        document.getElementById('contrastOff').addEventListener('change', function () {
+            if (this.checked) {
+                document.body.classList.remove('high-contrast');
+            }
+        });
+
+        // Save settings to localStorage
+        function saveSettings() {
+            const textSize = document.getElementById('textSizeSlider').value;
+            const contrast = document.querySelector(
+                'input[name="contrast"]:checked'
+            ).value;
+
+            localStorage.setItem('textSize', textSize);
+            localStorage.setItem('highContrast', contrast);
+
+            showMessage('Settings saved successfully!', 'success');
+
+            // Apply to all pages
+            window.dispatchEvent(new Event('settingsChanged'));
+        }
+
+        // Reset to default settings
+        function resetSettings() {
+            if (!confirm('Are you sure you want to reset all settings to default?')) {
+                return;
+            }
+
+            localStorage.removeItem('textSize');
+            localStorage.removeItem('highContrast');
+
+            document.getElementById('textSizeSlider').value = '14';
+            document.getElementById('contrastOff').checked = true;
+
+            applyTextSize('14');
+            document.body.classList.remove('high-contrast');
+
+            showMessage('Settings reset to defaults!', 'success');
+            window.dispatchEvent(new Event('settingsChanged'));
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            setTimeout(() => {
+                messageEl.className = 'message';
+            }, 3000);
+        }
+
+        // Initialize on page load
+        initializeSettings();
+
+        // apply stored accessibility preferences to the current page
+        function applyStoredSettings() {
+            const textSize = localStorage.getItem('textSize') || '14';
+            const contrast = localStorage.getItem('highContrast') || 'off';
+
+            document.body.classList.remove(
+                'text-size-small', 'text-size-normal',
+                'text-size-large', 'text-size-xlarge'
+            );
+
+            if (textSize === '12') {
+                document.body.classList.add('text-size-small');
+            } else if (textSize === '14') {
+                document.body.classList.add('text-size-normal');
+            } else if (textSize === '16') {
+                document.body.classList.add('text-size-large');
+            } else if (textSize === '18') {
+                document.body.classList.add('text-size-xlarge');
+            }
+
+            if (contrast === 'on') {
+                document.body.classList.add('high-contrast');
+            } else {
+                document.body.classList.remove('high-contrast');
+            }
+        }
+
+        applyStoredSettings();                        // run on load
+        window.addEventListener('settingsChanged', applyStoredSettings); // update if changed elsewhere
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Administrator Login</title>
+    <style>
+        body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Use a local image file (place nhs.jpg next to this HTML file or adjust path) */
+            background-image: url('images/nhs.jpg');
+            background-attachment: fixed;
+            /* fallback color while image loads */
+            background-color: var(--bg);
+        }
+        :root{--bg:#f3f4f6;--card:#fff;--accent:#0f62fe;--err:#ef4444;--muted:#6b7280}
+        html,body{height:100%}
+        body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;background:linear-gradient(180deg,var(--bg),#ffffff);display:flex;align-items:center;justify-content:center;padding:24px}
+        .card{width:100%;max-width:420px;background:var(--card);border-radius:12px;box-shadow:0 6px 24px rgba(15,23,42,0.08);padding:28px}
+        h1{margin:0 0 12px;font-size:20px}
+        p.lead{margin:0 0 18px;color:var(--muted);font-size:13px}
+        label{display:block;font-size:13px;margin-bottom:6px;color:#111827}
+        input[type="text"],input[type="password"]{width:100%;padding:10px 12px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box}
+        .row{margin-bottom:12px}
+        .actions{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+        button{background:var(--accent);color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+        button[disabled]{opacity:0.6;cursor:not-allowed}
+        .msg{font-size:13px;color:var(--err);margin-top:10px;min-height:18px}
+        .admin-area{display:none;margin-top:14px;padding:14px;border-radius:8px;background:#f8fafc;border:1px solid #e6eef8}
+        .success{color:green}
+        .hint{font-size:12px;color:var(--muted);margin-top:8px}
+    </style>
+</head>
+<body>
+    <main class="card" role="main" aria-labelledby="login-heading">
+        <h1 id="login-heading">Administrator Login</h1>
+        <p class="lead">Sign in with administrative credentials.</p>
+
+        <form id="loginForm" autocomplete="off" aria-describedby="msg">
+            <div class="row">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required autocomplete="username" autofocus />
+            </div>
+
+            <div class="row">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password" />
+            </div>
+
+            <div class="actions">
+                <button id="submitBtn" type="submit">Sign in</button>
+            </div>
+
+            <div id="msg" class="msg" role="status" aria-live="polite"></div>
+        </form>
+
+        <div id="adminArea" class="admin-area">
+            <p class="success">Login successful! Redirecting to dashboard...</p>
+        </div>
+    </main>
+
+    <style>
+        /* Page background image (replace the URL with your own) */
+        body {
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            /* Use a local image file (place nhs.jpg next to this HTML file or adjust path) */
+            background-image: url('images/nhs.jpg');
+            background-attachment: fixed;
+            /* fallback color while image loads */
+            background-color: var(--bg);
+        }
+
+        /* Subtle translucent overlay so the card stays readable */
+        body::before{
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.65);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Keep the card above the overlay */
+        main.card { position: relative; z-index: 1; }
+    </style>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const msgElement = document.getElementById('msg');
+        
+        // Define correct credentials
+        const correctUsername = 'admin';
+        const correctPassword = 'password';
+        
+        if (username === correctUsername && password === correctPassword) {
+            document.getElementById('adminArea').style.display = 'block';
+            msgElement.textContent = '';
+            setTimeout(() => {
+                window.location.href = 'Dashboard.html';
+            }, 1500);
+        } else {
+            msgElement.textContent = 'Invalid username or password. Please try again.';
+            document.getElementById('password').value = '';
+        }
+    });
+</script>
+    
+</body>
+</html>
