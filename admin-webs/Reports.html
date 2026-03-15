@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Health Matters – Reports</title>
+  <link href="https://fonts.googleapis.com/css2?family=Adlam+Display&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #156082;
+      --primary-dark: #0e4560;
+      --primary-light: #1a7aaa;
+      --white: #ffffff;
+      --bg: #f0f4f8;
+      --text: #1a1a2e;
+      --muted: #5a6a7a;
+      --err: #c0392b;
+      --success: #1a7a45;
+      --border: #d0dce8;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Base font size controlled by JS on html element */
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      font-weight: 300;
+      font-size: 0.875rem; /* 14px at base */
+      background: var(--bg);
+      min-height: 100vh;
+      padding-top: 112px;
+      padding-bottom: 80px;
+    }
+
+    /* HIGH CONTRAST */
+    body.high-contrast { background: #000 !important; color: #fff !important; }
+    body.high-contrast .topbar { background: #111 !important; }
+    body.high-contrast .navtabs { background: #1a1a1a !important; }
+    body.high-contrast .navtab { color: #ccc !important; }
+    body.high-contrast .navtab.active { background: #333 !important; color: #fff !important; }
+    body.high-contrast .card,
+    body.high-contrast .section { background: #1a1a1a !important; color: #fff !important; border-color: #444 !important; }
+    body.high-contrast table { background: #1a1a1a !important; }
+    body.high-contrast th { background: #333 !important; color: #fff !important; }
+    body.high-contrast td { color: #ddd !important; border-color: #444 !important; }
+    body.high-contrast tr:nth-child(even) { background: #111 !important; }
+    body.high-contrast input,
+    body.high-contrast select,
+    body.high-contrast textarea { background: #111 !important; color: #fff !important; border-color: #555 !important; }
+    body.high-contrast label { color: #ddd !important; }
+    body.high-contrast .stat-card { background: #1a1a1a !important; border-color: #444 !important; }
+    body.high-contrast .stat-num { color: #6bb8d4 !important; }
+    body.high-contrast .bottom-nav { background: #111 !important; border-color: #444 !important; }
+    body.high-contrast .modal { background: #1a1a1a !important; }
+    body.high-contrast .page-title { color: #6bb8d4 !important; }
+    body.high-contrast .section h2 { color: #6bb8d4 !important; }
+
+    /* TOPBAR */
+    .topbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 16px;
+      z-index: 200;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .topbar-logo {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .topbar-logo img { height: 38px; width: 38px; object-fit: contain; filter: brightness(0) invert(1); }
+    .topbar-logo-fallback {
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.125rem; flex-shrink: 0;
+    }
+    .topbar-title {
+      font-family: 'Adlam Display', serif;
+      font-size: 1.375rem;
+      color: var(--white);
+      letter-spacing: 1.5px;
+      white-space: nowrap;
+    }
+    .topbar-search {
+      flex: 1;
+      max-width: 360px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .topbar-search input {
+      width: 100%;
+      padding: 8px 36px 8px 14px;
+      border-radius: 20px;
+      border: none;
+      background: rgba(255,255,255,0.18);
+      color: var(--white);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.875rem;
+      outline: none;
+    }
+    .topbar-search input::placeholder { color: rgba(255,255,255,0.65); }
+    .topbar-search input:focus { background: rgba(255,255,255,0.28); }
+    .search-icon {
+      position: absolute; right: 12px; top: 50%;
+      transform: translateY(-50%); font-size: 0.875rem;
+      pointer-events: none;
+    }
+    .topbar-right { flex-shrink: 0; margin-left: auto; }
+    .my-account-btn {
+      display: flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15);
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .my-account-btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* NAV TABS */
+    .navtabs {
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: var(--primary-dark);
+      display: flex;
+      z-index: 190;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      overflow-x: auto;
+    }
+    .navtab {
+      padding: 0.75rem 1.5rem;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .navtab:hover { color: var(--white); background: rgba(255,255,255,0.08); }
+    .navtab.active { color: var(--white); border-bottom-color: var(--white); background: rgba(255,255,255,0.1); }
+
+    /* MAIN CONTENT */
+    .main { max-width: 1200px; margin: 0 auto; padding: 1.75rem 1.5rem; }
+
+    /* PAGE TITLE */
+    .page-title {
+      font-family: 'Adlam Display', serif;
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* SECTIONS */
+    .section {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 12px rgba(21,96,130,0.07);
+    }
+    .section h2 {
+      font-family: 'Adlam Display', serif;
+      font-size: 1.125rem;
+      color: var(--primary);
+      margin-bottom: 1.125rem;
+    }
+
+    /* FORMS */
+    .form-group { margin-bottom: 1rem; }
+    label {
+      display: block;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.375rem;
+    }
+    input[type="text"], input[type="email"], input[type="tel"],
+    input[type="number"], input[type="date"], select, textarea {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(21,96,130,0.1);
+    }
+
+    /* BUTTONS */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0.625rem 1.25rem;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-right: 8px;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--primary-dark); }
+    .btn-danger { background: #c0392b; }
+    .btn-danger:hover { background: #962d22; }
+    .btn-sm { padding: 0.375rem 0.875rem; font-size: 0.8125rem; }
+
+    /* TABLES */
+    table { width: 100%; border-collapse: collapse; background: var(--white); }
+    th {
+      background: var(--primary);
+      color: var(--white);
+      padding: 0.75rem 0.875rem;
+      text-align: left;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+    td {
+      padding: 0.6875rem 0.875rem;
+      border-bottom: 1px solid #e8eef5;
+      font-size: 0.875rem;
+      color: var(--text);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f5f9fc; }
+
+    /* MESSAGES */
+    .msg-bar {
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: none;
+    }
+    .msg-bar.success { background: #eaf7ef; color: var(--success); display: block; }
+    .msg-bar.error { background: #fdecea; color: var(--err); display: block; }
+
+    /* STAT CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 2px 12px rgba(21,96,130,0.07);
+      border-left: 4px solid var(--primary);
+    }
+    .stat-card .stat-num {
+      font-family: 'Adlam Display', serif;
+      font-size: 2rem;
+      color: var(--primary);
+      line-height: 1;
+    }
+    .stat-card .stat-label {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-top: 0.375rem;
+      font-weight: 600;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 0.75rem 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 190;
+    }
+    .btn-back { background: var(--muted); }
+    .btn-back:hover { background: #3a4a5a; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.4); z-index: 500;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+      animation: fadeUp 0.3s ease;
+    }
+    .modal h2 { font-family: 'Adlam Display', serif; font-size: 1.25rem; color: var(--primary); margin-bottom: 1.25rem; }
+    .modal-close {
+      float: right; background: none; border: none;
+      font-size: 1.25rem; cursor: pointer; color: var(--muted); margin-top: -4px;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 700px) {
+      .topbar-search { display: none; }
+      .topbar-title { font-size: 1rem; }
+      .navtab { padding: 0.625rem 0.875rem; font-size: 0.75rem; }
+      .main { padding: 1rem 0.75rem; }
+    }
+    .topbar-logo img { height: 52px; width: auto; object-fit: contain; }
+    .search-bar-row { display: flex; gap: 0.625rem; margin-bottom: 1.25rem; }
+    .search-bar-row input { flex: 1; }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: #e8f4fb;
+      color: var(--primary);
+    }
+    .doc-link {
+      color: var(--primary);
+      font-size: 0.8125rem;
+      word-break: break-all;
+    }
+    .summary-cell { max-width: 340px; }
+    .stat-card.reports { border-left-color: #1a7a45; }
+    .stat-card.reports .stat-num { color: #1a7a45; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="topbar-logo" href="Dashboard.html">
+      <img src="images/lanc_logo.png" alt="UCLan logo"/>
+      <span class="topbar-title">HEALTH MATTERS</span>
+    </a>
+    <div class="topbar-search">
+      <input type="text" placeholder="Search…" aria-label="Search"/>
+      <span class="search-icon">🔍</span>
+    </div>
+    <div class="topbar-right">
+      <button class="my-account-btn" onclick="location.href='admin_login.html'">
+        <span>👤</span> My Account
+      </button>
+    </div>
+  </header>
+  <nav class="navtabs">
+    <a href="Dashboard.html" class="navtab">Dashboard</a>
+    <a href="Approvals.html" class="navtab">Referrals</a>
+    <a href="Usermanage.html" class="navtab">User Permissions</a>
+    <a href="SPmanagement.html" class="navtab">Service Management</a>
+    <a href="Reports.html" class="navtab active">Reports</a>
+    <a href="Settings.html" class="navtab">Settings</a>
+  </nav>
+
+  <main class="main">
+    <h1 class="page-title">Reports</h1>
+
+    <div class="stats-grid">
+      <div class="stat-card reports">
+        <div class="stat-num" id="statTotal">–</div>
+        <div class="stat-label">Total Reports</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="statLatest">–</div>
+        <div class="stat-label">Latest Report</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>All Reports</h2>
+      <div class="search-bar-row">
+        <input type="text" id="searchInput" placeholder="Search by summary or referral ID…" oninput="filterReports()"/>
+        <button class="btn" onclick="resetSearch()">Clear</button>
+      </div>
+      <div id="msgBar" class="msg-bar"></div>
+      <table>
+        <thead>
+          <tr>
+            <th>Report ID</th>
+            <th>Referral ID</th>
+            <th>Summary</th>
+            <th>Document</th>
+            <th>Sent At</th>
+          </tr>
+        </thead>
+        <tbody id="reportsBody"><tr><td colspan="5">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="bottom-nav">
+    <button class="btn btn-back" onclick="location.href='SPmanagement.html'">← Back</button>
+    <button class="btn" onclick="location.href='Settings.html'">Next: Settings →</button>
+  </div>
+
+  <script>
+    function applyStoredSettings() {
+      const textSize = localStorage.getItem('textSize') || '16';
+      const contrast = localStorage.getItem('highContrast') || 'off';
+      document.documentElement.style.fontSize = textSize + 'px';
+      if (contrast === 'on') document.body.classList.add('high-contrast');
+      else document.body.classList.remove('high-contrast');
+    }
+    applyStoredSettings();
+    window.addEventListener('settingsChanged', applyStoredSettings);
+
+    const API = 'https://admin-web-production-1875.up.railway.app';
+    let allReports = [];
+
+    async function loadReports() {
+      try {
+        const reports = await fetch(`${API}/api/reports?_=${Date.now()}`).then(r => r.json());
+        allReports = reports;
+        document.getElementById('statTotal').textContent = reports.length;
+        if (reports.length > 0) {
+          document.getElementById('statLatest').textContent = reports[0].sent_at || '–';
+        }
+        displayReports(reports);
+      } catch(e) {
+        console.error(e);
+        document.getElementById('reportsBody').innerHTML = '<tr><td colspan="5">Error loading reports. Is the server running?</td></tr>';
+      }
+    }
+
+    function displayReports(reports) {
+      const tbody = document.getElementById('reportsBody');
+      if (!reports.length) {
+        tbody.innerHTML = '<tr><td colspan="5">No reports found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = reports.map(r => `
+        <tr>
+          <td><span class="badge">#${r.report_id}</span></td>
+          <td><span class="badge">${r.referral_id}</span></td>
+          <td class="summary-cell">${r.summary || '–'}</td>
+          <td><span class="doc-link">${r.document_path || '–'}</span></td>
+          <td>${r.sent_at || '–'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterReports() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      displayReports(allReports.filter(r =>
+        (r.summary || '').toLowerCase().includes(q) ||
+        String(r.referral_id).includes(q) ||
+        String(r.report_id).includes(q)
+      ));
+    }
+
+    function resetSearch() {
+      document.getElementById('searchInput').value = '';
+      displayReports(allReports);
+    }
+
+    loadReports();
+  </script>
+</body>
+</html>
