@@ -6,13 +6,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool({
-  user: 'postgres',
-  host: 'localhost',
-  database: 'agile_db ',
-  password: 'jimmy', // ← replace with your PostgreSQL password
-  port: 5432,
-});
+const dbUrl = process.env.DATABASE_URL;
+console.log('DATABASE_URL present:', !!dbUrl);
+
+const pool = dbUrl
+  ? new Pool({ connectionString: dbUrl, ssl: { rejectUnauthorized: false } })
+  : new Pool({ user: 'postgres', host: 'localhost', database: 'agile_db', password: 'jimmy', port: 5432 });
+
+pool.on('error', (err) => console.error('Pool error:', err.message || JSON.stringify(err)));
 
 // Create tables needed by the app if they don't exist
 pool.query(`
@@ -197,11 +198,7 @@ app.get('/api/activity', async (req, res) => {
 // REPORTS
 app.get('/api/reports', async (req, res) => {
   try {
-    const r = await pool.query(`
-      SELECT report_id, referral_id, document_path, summary,
-             to_char(sent_at, 'DD/MM/YYYY HH24:MI') AS sent_at
-      FROM report ORDER BY sent_at DESC
-    `);
+    const r = await pool.query(`SELECT report_id, referral_id, document_path, summary, to_char(sent_at, 'DD/MM/YYYY HH24:MI') AS sent_at FROM report ORDER BY sent_at DESC`);
     res.json(r.rows);
   } catch (e) { console.error('API Error:', e); res.status(500).json({ error: e.message || e.toString() }); }
 });
