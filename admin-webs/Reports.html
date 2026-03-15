@@ -57,7 +57,7 @@
     body.high-contrast .section h2 { color: #6bb8d4 !important; }
 
     /* TOPBAR */
-    .topbar {
+      .topbar {
       position: fixed;
       top: 0; left: 0; right: 0;
       height: 64px;
@@ -73,7 +73,7 @@
       display: flex; align-items: center; gap: 12px;
       text-decoration: none; flex-shrink: 0;
     }
-    .topbar-logo img { height: 38px; width: 38px; object-fit: contain; filter: brightness(0) invert(1); }
+    .topbar-logo img { height: 44px; width: auto; object-fit: contain; }
     .topbar-logo-fallback {
       width: 38px; height: 38px;
       background: rgba(255,255,255,0.15);
@@ -127,6 +127,7 @@
       transition: background 0.2s;
     }
     .my-account-btn:hover { background: rgba(255,255,255,0.28); }
+
 
     /* NAV TABS */
     .navtabs {
@@ -366,7 +367,7 @@
     </div>
     <div class="topbar-right">
       <button class="my-account-btn" onclick="location.href='admin_login.html'">
-        <span>👤</span> My Account
+        Log out
       </button>
     </div>
   </header>
@@ -391,6 +392,26 @@
         <div class="stat-num" id="statLatest">–</div>
         <div class="stat-label">Latest Report</div>
       </div>
+    </div>
+
+    <div class="section">
+      <h2>Add New Report</h2>
+      <div id="reportMsg" class="msg-bar"></div>
+      <form id="reportForm" autocomplete="off">
+        <div class="form-group">
+          <label>Referral ID</label>
+          <input type="number" id="reportReferralId" required placeholder="e.g. 1"/>
+        </div>
+        <div class="form-group">
+          <label>Document Path</label>
+          <input type="text" id="reportDocPath" placeholder="e.g. /files/reports/report_21.pdf"/>
+        </div>
+        <div class="form-group">
+          <label>Summary</label>
+          <input type="text" id="reportSummary" required placeholder="Brief summary of the report"/>
+        </div>
+        <button class="btn" type="submit">💾 Save Report</button>
+      </form>
     </div>
 
     <div class="section">
@@ -478,6 +499,39 @@
     function resetSearch() {
       document.getElementById('searchInput').value = '';
       displayReports(allReports);
+    }
+
+
+    document.getElementById('reportForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const body = {
+        referral_id: document.getElementById('reportReferralId').value,
+        document_path: document.getElementById('reportDocPath').value,
+        summary: document.getElementById('reportSummary').value,
+      };
+      try {
+        const res = await fetch(`${API}/api/reports`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) {
+          const err = await res.json().catch(()=>({}));
+          throw new Error(err.error || 'HTTP ' + res.status);
+        }
+        showMsg('reportMsg', '✅ Report added!', 'success');
+        this.reset();
+        await loadReports();
+      } catch(e) {
+        showMsg('reportMsg', '❌ Error: ' + e.message, 'error');
+      }
+    });
+
+    function showMsg(elId, text, type) {
+      const el = document.getElementById(elId);
+      el.textContent = text;
+      el.className = `msg-bar ${type}`;
+      setTimeout(() => { el.className = 'msg-bar'; el.textContent = ''; }, 3000);
     }
 
     loadReports();
